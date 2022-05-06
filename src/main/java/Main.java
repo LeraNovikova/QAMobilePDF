@@ -39,33 +39,27 @@ public class Main {
     public static String[][] getData(int n){
         String[][] tableData = new String[n][14];
         for (int i=0; i<n; i++) {
-            tableData[i][4] = getRandom(gender());
+            tableData[i][4] = getRandom(gender());          //пол
             String sex;
             if (tableData[i][4] == "ЖЕН") {
                 sex = "W";
             } else {
                 sex = "M";
             }
-            tableData[i][0] = getRandom(name(sex));
-            tableData[i][1] = getRandom(lastName(sex));
-            tableData[i][2] = getRandom(fatherName(sex));
-            tableData[i][5] = randomBirthday();
-            tableData[i][3] = age(tableData[i][5]);
-            tableData[i][8] = "Россия";
-            tableData[i][12] = building();
-            tableData[i][13] = apartment();
-               /*         else if (i==6){//место роаждения
-                }
-                else if (i==7){//индекс
-                }
-                else if (i==9){//Область
-                }
-                else if (i==10){//город
-                }
-                else if (i==11){//улица
-                }
- */
-        }
+            tableData[i][0] = getRandom(name(sex));         //имя
+            tableData[i][1] = getRandom(lastName(sex));     //фамилия
+            tableData[i][2] = getRandom(fatherName(sex));   //отчество
+            tableData[i][5] = randomBirthday();             //день рождения
+            tableData[i][3] = age(tableData[i][5]);         //возраст
+            tableData[i][8] = "Россия";                     //страна
+            tableData[i][6] = getRandom(towns(), 1);                      //место рождения
+            tableData[i][7] = index();                      //индекс
+   //         tableData[i][9] = state();                      //область
+     //       tableData[i][10] = city();                      //город
+            tableData[i][11] = apartment();                 //улица
+            tableData[i][12] = building();                  //дом
+            tableData[i][13] = apartment();                 //квартира
+          }
         return tableData;
     }
 
@@ -186,6 +180,18 @@ public class Main {
         return myArray[randomIndex];
     }
 
+    public static String getRandom(String[][] myArray, int collumn) {
+        Random generator = new Random();
+        int randomIndex = generator.nextInt(myArray.length);
+        return myArray[randomIndex][collumn];
+    }
+
+    public static String index(){
+        Random generator = new Random();
+        int randomIndex = generator.nextInt(999998)+1;
+        return String.valueOf(randomIndex);
+    }
+
     public static String randomBirthday() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate dateBD = LocalDate.now().minus(Period.ofDays((new Random().nextInt(365 * 70))));
@@ -199,7 +205,7 @@ public class Main {
         return String.valueOf(years);
     }
 
-    public static String towns(){
+    public static String[][] towns(){
         String[][]town = {
                 {"Орловская область","Орел"},
                 {"Воронежская область","Воронеж"},
@@ -212,8 +218,7 @@ public class Main {
                 {"Республика Татарстан","Набережные Челны"},
                 {"Московская область","Нахабино"}
         };
-        String h = town[0][0];
-        return h;
+        return town;
     }
 
     public static int numOfLines(){
