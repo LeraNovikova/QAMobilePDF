@@ -1,66 +1,78 @@
-import java.time.*;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.pdf.PdfPCell;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.Scanner;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-
-import java.io.*;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.*;
-import java.awt.event.*;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
 
 public class Main {
 
-    public static String[][] table(String[][] tableData){
-        String[] columnHeaders ={"Имя", "Фамилия", "Отчество", "Возраст", "Пол", "Дата рождения",
-                "Место рождения", "Индекс", "Страна", "Область", "Город",
-                "Улица", "Дом", "Квартира"};
+    public static void pdf(int n) {
+        com.itextpdf.text.Document document = new com.itextpdf.text.Document(com.itextpdf.text.PageSize.A4.rotate());
 
-        JFrame frame = new JFrame("Люди");
-        frame.getContentPane().setLayout(new FlowLayout());
-        frame.setSize(1200, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JTable jtableFIO = new JTable(tableData, columnHeaders);
-        JScrollPane scroll = new JScrollPane(jtableFIO);
-        jtableFIO.setPreferredScrollableViewportSize(new Dimension(1200, 600));
-        frame.getContentPane().add(scroll);
-        frame.setVisible(true);
+        Font font = com.itextpdf.text.FontFactory.getFont("C:/Windows/Fonts/arial.ttf", "cp1251", com.itextpdf.text.pdf.BaseFont.EMBEDDED, 8);
+        try (FileOutputStream fs = new FileOutputStream("People-Table.pdf")) {
+            com.itextpdf.text.pdf.PdfWriter.getInstance(document, fs);
 
-        return tableData;
-    }
+            document.open();
 
-    public static String[][] getData(int n){
-        String[][] tableData = new String[n][14];
-        for (int i=0; i<n; i++) {
-            tableData[i][4] = getRandom(gender());          //пол
-            String sex;
-            if (tableData[i][4] == "ЖЕН") {
-                sex = "W";
-            } else {
-                sex = "M";
+            com.itextpdf.text.pdf.PdfPTable table = new com.itextpdf.text.pdf.PdfPTable(14);
+
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Имя", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Фамилия", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Отчесвто", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Возраст", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Пол", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Дата рождения", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Место рождения", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Индекс", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Страна", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Область", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Город", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Улица", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Дом", font)));
+            table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Квартира", font)));
+            table.setWidthPercentage(100);
+            table.setSpacingBefore(10f);
+
+            table.setSpacingAfter(10f);
+
+            for (int i = 0; i < n; i++) {
+
+                String DoB = randomBirthday();
+                String gender = getRandom(gender());
+
+                String[] tAs = townsAndStates();
+
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(getRandom(name(gender)), font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(getRandom(lastName(gender)), font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(getRandom(fatherName(gender)), font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(age(DoB), font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(gender, font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(DoB, font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(getRandom(towns(), 1), font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(index(), font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("Россия", font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(tAs[0], font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(tAs[1], font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph("k", font)));
+                table.addCell(new com.itextpdf.text.pdf.PdfPCell(new com.itextpdf.text.Paragraph(building(), font)));
+                table.addCell(new PdfPCell(new com.itextpdf.text.Paragraph(apartment(), font)));
             }
-            tableData[i][0] = getRandom(name(sex));         //имя
-            tableData[i][1] = getRandom(lastName(sex));     //фамилия
-            tableData[i][2] = getRandom(fatherName(sex));   //отчество
-            tableData[i][5] = randomBirthday();             //день рождения
-            tableData[i][3] = age(tableData[i][5]);         //возраст
-            tableData[i][8] = "Россия";                     //страна
-            tableData[i][6] = getRandom(towns(), 1);                      //место рождения
-            tableData[i][7] = index();                      //индекс
-   //         tableData[i][9] = state();                      //область
-     //       tableData[i][10] = city();                      //город
-            tableData[i][11] = apartment();                 //улица
-            tableData[i][12] = building();                  //дом
-            tableData[i][13] = apartment();                 //квартира
-          }
-        return tableData;
+
+            document.add(table);
+
+            document.close();
+        }
+        catch (DocumentException exc) {
+        }
+        catch (IOException exc) {
+        }
     }
 
     public static String[] name(String sex){
@@ -88,7 +100,7 @@ public class Main {
                 "Валерий",
                 "Александр"
         };
-        if (sex=="W")
+        if (sex.equals("ЖЕН"))
             return namesW;
         else
             return namesM;
@@ -119,7 +131,7 @@ public class Main {
                 "Бела",
                 "Детков"
         };
-        if (sex=="W")
+        if (sex.equals("ЖЕН"))
             return lastnamesW;
         else
             return lastnamesM;
@@ -151,7 +163,7 @@ public class Main {
                 "Васильевич"
         };
 
-        if (sex=="W")
+        if (sex.equals("ЖЕН"))
             return fathernamesW;
         else
             return fathernamesM;
@@ -160,6 +172,27 @@ public class Main {
     public static String[] gender(){
         String[] gender ={"МУЖ","ЖЕН"};
         return gender;
+    }
+
+    public static String[] townsAndStates(){
+        String[] tAndS = getRandom(towns());
+        return tAndS;
+    }
+
+    public static String[][] towns(){
+        String[][]town = {
+                {"Орловская область","Орел"},
+                {"Воронежская область","Воронеж"},
+                {"Московская область","Москва"},
+                {"Кабардино-Балкарская Республика","Нальчик"},
+                {"Кабардино-Балкарская Республика","Эльбрус"},
+                {"Московская область","Серпухов"},
+                {"Ленинградская область","Санкт-Петербург"},
+                {"Республика Татарстан","Казань"},
+                {"Республика Татарстан","Набережные Челны"},
+                {"Московская область","Нахабино"}
+        };
+        return town;
     }
 
     public static String building(){
@@ -180,10 +213,16 @@ public class Main {
         return myArray[randomIndex];
     }
 
-    public static String getRandom(String[][] myArray, int collumn) {
+    public static String getRandom(String[][] myArray, int column) {
         Random generator = new Random();
         int randomIndex = generator.nextInt(myArray.length);
-        return myArray[randomIndex][collumn];
+        return myArray[randomIndex][column];
+    }
+
+    public static String[] getRandom(String[][] myArray) {
+        Random generator = new Random();
+        int randomIndex = generator.nextInt(myArray.length);
+        return myArray[randomIndex];
     }
 
     public static String index(){
@@ -205,22 +244,6 @@ public class Main {
         return String.valueOf(years);
     }
 
-    public static String[][] towns(){
-        String[][]town = {
-                {"Орловская область","Орел"},
-                {"Воронежская область","Воронеж"},
-                {"Московская область","Москва"},
-                {"Кабардино-Балкарская Республика","Нальчик"},
-                {"Кабардино-Балкарская Республика","Эльбрус"},
-                {"Московская область","Серпухов"},
-                {"Ленинградская область","Санкт-Петербург"},
-                {"Республика Татарстан","Казань"},
-                {"Республика Татарстан","Набережные Челны"},
-                {"Московская область","Нахабино"}
-        };
-        return town;
-    }
-
     public static int numOfLines(){
         Scanner sc = new Scanner(System.in);
         int n=0;
@@ -235,8 +258,6 @@ public class Main {
 
         int n = numOfLines();
 
-        String[][] tableData = getData(n);
-
-        table(tableData);
+        pdf(n);
     }
 }

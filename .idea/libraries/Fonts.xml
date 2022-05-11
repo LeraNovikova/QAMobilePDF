@@ -1,0 +1,10 @@
+﻿<component name="libraryTable">
+  <library name="Fonts">
+    <CLASSES />
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://$PROJECT_DIR$/../../../../Windows/Fonts" />
+    </NATIVE>
+    <SOURCES />
+  </library>
+</component>
